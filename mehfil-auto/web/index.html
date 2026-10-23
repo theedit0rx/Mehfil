@@ -13,10 +13,47 @@
 .category{background:linear-gradient(155deg,#242f25,#161e18);box-shadow:0 6px 28px #0002;min-height:122px}.category:hover{box-shadow:0 15px 42px #0006;transform:translateY(-4px)}.compact-categories .category{min-height:108px;padding:16px}.compact-categories .category strong{font-size:16px}.group-heading{margin-top:30px}.group-heading h2{font-size:clamp(21px,2.4vw,28px)}.group-heading button{min-height:34px;padding:9px 14px}.catalog-note{color:#c7d0b9;background:#1c2b20;border:1px solid #384e3c;padding:12px 17px;border-radius:14px;margin-top:18px;font-size:13px;line-height:1.6}.category:focus-visible,.category:hover{outline-color:var(--gold)}html{scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 @media(max-width:600px){.group-heading{margin-top:23px}.group-heading h2{font-size:22px}.compact-categories .category{min-height:112px;padding:14px}.catalog-note{padding:10px 12px}.banner:after{opacity:.35}}
+
+/* Unified website-to-app download experience */
+.install-hub{margin:24px 0 34px;padding:clamp(20px,3vw,30px);border:1px solid #85724a;border-radius:24px;background:radial-gradient(circle at 94% 0%,#3c4630,#1e281e 52%,#172019);scroll-margin-top:20px}
+.install-hub h2{font:normal clamp(29px,3vw,42px) Georgia,serif;line-height:1.1;margin:8px 0 12px}
+.install-hub>p{max-width:720px}
+.install-methods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:20px}
+.install-method{border:1px solid #485c40;border-radius:18px;background:#111a12a8;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.install-method strong{font:normal 24px Georgia,serif}
+.install-method p{margin:0;color:#b3bdb0;font-size:13px;flex:1}
+.install-method .btn{display:inline-flex;text-decoration:none;align-items:center;justify-content:center;gap:8px}
+.install-tag{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#f2dca8}
+.install-note{color:#e0d4b4;font-size:12px;min-height:18px;margin-top:12px}
+.install-header-link{display:inline-flex;align-items:center;justify-content:center;color:#201b10;background:#d9b66b;text-decoration:none;font-weight:700;border-radius:12px;padding:9px 13px;font-size:13px;min-height:42px;white-space:nowrap}
+.install-header-link:hover{background:#f0cc86}
+@media(max-width:640px){.install-methods{grid-template-columns:1fr}.install-hub{margin:18px 0 30px}.install-header-link{padding:8px 9px;font-size:12px}}
+
 </style></head><body>
-<div class="app"><aside class="sidebar"><div class="brand">MEHFIL</div><div class="subtitle">AUTO · Private music sanctuary</div><div class="nav"><button class="active" id="nav-home">✦ &nbsp; Your Mehfil</button><button id="nav-all">♫ &nbsp; All Kalaam</button><button id="nav-favorites">♡ &nbsp; Favorites</button><button id="nav-unclassified">◇ &nbsp; Needs Sorting</button><button id="nav-insights">◷ &nbsp; Listening Story</button></div><div class="left-info">Har Kalaam, Ek Mehfil.<p>Local-first. Your audio stays on your device.</p></div></aside>
-<main class="main"><header><span class="mobile-brand">MEHFIL <span style="color:#fff;font-size:12px">AUTO</span></span><span class="eyebrow" id="topline">YOUR PERSONAL MUSIC LIBRARY</span><span class="pill" id="library-status">● Local & private</span></header>
+<div class="app"><aside class="sidebar"><div class="brand">MEHFIL</div><div class="subtitle">AUTO · Private music sanctuary</div><div class="nav"><button class="active" id="nav-home">✦ &nbsp; Your Mehfil</button><button id="nav-all">♫ &nbsp; All Kalaam</button><button id="nav-favorites">♡ &nbsp; Favorites</button><button id="nav-unclassified">◇ &nbsp; Needs Sorting</button><button id="nav-insights">◷ &nbsp; Listening Story</button><button id="nav-install">↓ &nbsp; Download App</button></div><div class="left-info">Har Kalaam, Ek Mehfil.<p>Local-first. Your audio stays on your device.</p></div></aside>
+<main class="main"><header><span class="mobile-brand">MEHFIL <span style="color:#fff;font-size:12px">AUTO</span></span><span class="eyebrow" id="topline">YOUR PERSONAL MUSIC LIBRARY</span><a class="install-header-link" id="header-install" href="#install-mehfil">↓ Download App</a><span class="pill" id="library-status">● Local & private</span></header>
 <div class="banner"><div><div class="eyebrow">A home for every kalaam</div><h1>Every melody,<br><span class="gold">in its own mehfil.</span></h1><p class="lead">Every accessible song in one library. Automatically organized by kalaam, artist, album and folder—with overlapping playlists and no fixed artist limit.</p><div class="actions"><button class="btn" id="scan">Scan my songs</button><button class="btn alt" id="pick">Choose audio files / folder</button><button class="btn alt hidden" id="folder-android">＋ Add music folder</button><input id="files" type="file" accept="audio/*" multiple hidden><input id="folder" type="file" accept="audio/*" webkitdirectory multiple hidden></div><div id="status" class="status" aria-live="polite"></div><div class="hint" id="permission-note">Android app: grant audio access once to discover music automatically. Website: select files or a folder manually.</div></div><div class="calligraphy" aria-hidden="true">﷽</div></div>
+
+<section class="install-hub" id="install-mehfil" aria-labelledby="install-title">
+  <div class="eyebrow">ONE HOME FOR YOUR MUSIC · INSTALL ANYWHERE</div>
+  <h2 id="install-title">Your Mehfil. <span class="gold">Always with you.</span></h2>
+  <p class="muted">Install directly from this website, just like Semester One. Keep the same Mehfil experience with two ways to take it offline.</p>
+  <div class="install-methods">
+    <article class="install-method">
+      <span class="install-tag">Recommended for Android · Automatic local music scan</span>
+      <strong>Mehfil for Android</strong>
+      <p>Download the Android APK, grant Music &amp; audio permission, and scan audio saved on your phone. Your playlists, listening stats, and monthly memories stay private on your device.</p>
+      <a class="btn" id="apk-download" href="https://github.com/theedit0rx/Mehfil/releases/download/mehfil-auto-v2/Mehfil-Auto.apk" aria-label="Download Mehfil Auto Android APK">↓ Download Android App</a>
+    </article>
+    <article class="install-method">
+      <span class="install-tag">Web app · Home-screen shortcut</span>
+      <strong>Install Mehfil Web</strong>
+      <p>Install the website to your home screen and open it without browser tabs. For music scanning, use the Choose files / folder option; browsers cannot silently read your music library.</p>
+      <button class="btn alt" type="button" id="install-web">✧ Install Web App</button>
+    </article>
+  </div>
+  <p class="install-note" id="install-note" aria-live="polite">Android APK: full local audio scan. Web app: manual file or folder selection.</p>
+</section>
 <section id="insights" class="insights" aria-labelledby="insight-title"><div class="insight-head"><div><div class="eyebrow">YOUR PRIVATE LISTENING JOURNEY</div><h2 id="insight-title">Listening Story <span class="gold">✦</span></h2><p class="muted small" style="margin:5px 0">Actual time played, not the length of your audio files.</p></div><span class="pill">◎ Stored only on this device</span></div>
 <div class="stat-grid" aria-label="Listening totals"><div class="stat-tile"><span>Today</span><strong id="stat-today">0m</strong></div><div class="stat-tile"><span>This week</span><strong id="stat-week">0m</strong></div><div class="stat-tile"><span>This month</span><strong id="stat-month">0m</strong></div><div class="stat-tile"><span>All time</span><strong id="stat-all">0m</strong></div></div>
 <div class="story-grid"><article class="story-panel"><div class="panel-top"><div><div class="story-highlight">Listening activity</div><div class="muted small" id="history-caption">Last 7 days</div></div><div class="period-tabs" role="group" aria-label="Listening report period"><button class="active" data-period="daily" aria-pressed="true">Daily</button><button data-period="weekly" aria-pressed="false">Weekly</button><button data-period="monthly" aria-pressed="false">Monthly</button></div></div><div class="history-bars" id="history-bars" role="img" aria-label="Listening time by period"></div><p class="muted small">Listen to a song to begin your record. Paused time and skipped audio are not included.</p></article>
@@ -117,5 +154,20 @@ async function loadFiles(fs){const list=Array.from(fs).filter(f=>f.type.startsWi
 for(let i=0;i<list.length;i+=12){const batch=list.slice(i,i+12);const mapped=await Promise.all(batch.map(async file=>{const tag=await fileMetadata(file);return {id:`web:${file.webkitRelativePath||file.name}:${file.size}:${file.lastModified}`,name:file.name,title:tag.title||file.name.replace(/\.[^.]+$/,'').replace(/[_]/g,' '),artist:tag.artist||'Unknown artist',album:tag.album||'',genre:tag.genre||'',duration:0,path:file.webkitRelativePath||file.name,file};}));songs.push(...mapped);if(i%120===0&&list.length>120)msg(`Reading tags from ${Math.min(i+12,list.length)} / ${list.length} songs…`);}
 receive(songs);if(!songs.length)msg('No audio files found. Try an MP3/M4A/FLAC folder.');}
 $('files').addEventListener('change',e=>loadFiles(e.target.files));$('folder').addEventListener('change',e=>loadFiles(e.target.files));$('search').addEventListener('input',e=>{q=n(e.target.value);renderList()});$('clear').onclick=()=>{if(native){msg('Android music library cannot be cleared from here.');return;}tracks=[];listeningTick();listeningSample=null;webAudio.pause();msg('Web imports cleared. Your music files were not changed.');update()};for(const [p,id]of [['home','all'],['all','all'],['favorites','favorites'],['unclassified','unclassified'],['insights','insights']]){for(const prefix of ['nav-','m-']){const el=$(prefix+p);if(el)el.onclick=()=>select(id)}}
+
+/* Native APK and installable PWA are both available inside this same website. */
+let deferredInstallPrompt=null;
+const webInstallButton=$('install-web'),webInstallNote=$('install-note');
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredInstallPrompt=event;webInstallNote.textContent='Web app installation is ready. Tap Install Web App.';});
+window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;webInstallButton.textContent='✓ Web app installed';webInstallNote.textContent='Mehfil Web has been added to your device.';});
+webInstallButton.addEventListener('click',async()=>{
+  if(window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true){webInstallNote.textContent='You already opened the installed web edition.';return;}
+  if(deferredInstallPrompt){const prompt=deferredInstallPrompt;deferredInstallPrompt=null;prompt.prompt();const choice=await prompt.userChoice;webInstallNote.textContent=choice.outcome==='accepted'?'Installation selected. Look for Mehfil on your home screen.':'You can install Mehfil whenever you want.';return;}
+  if(/iPad|iPhone|iPod/.test(navigator.userAgent)){webInstallNote.textContent='Safari: tap Share, then Add to Home Screen.';}
+  else{webInstallNote.textContent='In Chrome, tap ⋮ (menu), then Install app or Add to Home screen.';}
+});
+$('nav-install').onclick=()=>$('install-mehfil').scrollIntoView({behavior:'smooth',block:'start'});
+if(native){$('install-mehfil').classList.add('hidden');$('header-install').classList.add('hidden');$('nav-install').classList.add('hidden');}
+
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});if(native){$('pick').classList.add('hidden');$('folder-android').classList.remove('hidden');$('clear').classList.add('hidden');$('permission-note').textContent='Android: all accessible audio is scanned on-device. For music hidden from the system library, select its folder with + Add music folder.';setTimeout(scan,250)}else{msg('Ready. Choose a folder to create your playlists locally.');}update();refreshInsights();
 </script></body></html>
