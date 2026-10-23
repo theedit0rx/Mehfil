@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.content.ContentUris;
 import android.database.Cursor;
-import android.media.MediaPlayer;
 import android.media.MediaMetadataRetriever;
 import android.provider.DocumentsContract;
 import android.content.UriPermission;
@@ -35,7 +34,6 @@ import java.util.concurrent.ExecutorService;
 
 public class MainActivity extends Activity {
   private WebView web;
-  private MediaPlayer player;
   private final ExecutorService worker = Executors.newSingleThreadExecutor();
   private boolean ready = false;
   private boolean completed = false;
@@ -60,7 +58,7 @@ public class MainActivity extends Activity {
         catch(Exception e){fileCallback.onReceiveValue(null);fileCallback=null;return false;}
       }
     });
-    web.setWebViewClient(new WebViewClient(){@Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){return !request.getUrl().toString().equals("file:///android_asset/index.html");}@Override public void onPageFinished(WebView v,String url){ready=true;}});setContentView(web);web.loadUrl("file:///android_asset/index.html");
+    web.setWebViewClient(new WebViewClient(){@Override public boolean shouldOverrideUrlLoading(WebView view,WebResourceRequest request){return !request.getUrl().toString().equals("file:///android_asset/index.html");}@Override public void onPageFinished(WebView v,String url){ready=true;send("onServiceState",PlaybackService.snapshot());}});setContentView(web);web.loadUrl("file:///android_asset/index.html");
   }
   private boolean acceptedAudio(String name, String mime){
     if (mime != null && mime.startsWith("audio/")) return true;
@@ -161,18 +159,33 @@ public class MainActivity extends Activity {
     i.setType("application/json");i.putExtra(Intent.EXTRA_TITLE,filename==null?"Mehfil-Listening.json":filename.replaceAll("[^a-zA-Z0-9_.-]","_"));
     try{startActivityForResult(i,EXPORT_BACKUP);}catch(Exception e){pendingBackup=null;send("onBackupSaved","No document picker was found.");}
   });}
-  @Override protected void onResume(){super.onResume();if(ready&&hasAudioPermission())scan();}
-  @Override protected void onDestroy(){if(player!=null){player.release();player=null;}worker.shutdownNow();if(web!=null)web.destroy();super.onDestroy();}
-  private void play(String value){runOnUiThread(()->{try{Uri uri=Uri.parse(value);if(!"content".equals(uri.getScheme()))throw new IllegalArgumentException("Unsupported audio source");
-    if(!"media".equals(uri.getAuthority())&&!DocumentsContract.isDocumentUri(MainActivity.this,uri))throw new IllegalArgumentException("This audio file is not in your approved music folders");if(player!=null){player.release();player=null;}player=new MediaPlayer();completed=false;player.setDataSource(MainActivity.this,uri);player.setOnCompletionListener(mp->completed=true);player.prepare();player.start();send("onPlaying",value);}catch(Exception ex){send("onPlayerError",ex.getMessage());}});}
+  @Override protected void onResume(){super.onResume();if(ready){send("onServiceState",PlaybackService.snapshot());if(hasAudioPermission())scan();}}
+  @Override protected void onDestroy(){worker.shutdownNow();if(web!=null)web.destroy();super.onDestroy();}
+  // UI forwards playback selection to a separate, long-lived foreground media service.
+  private void play(String value,String title,String artist,String id){runOnUiThread(()->{
+    try {
+      Uri uri=Uri.parse(value);
+      if(!"content".equals(uri.getScheme()))throw new IllegalArgumentException("Only approved local audio can play");
+      if(!"media".equals(uri.getAuthority())&&!DocumentsContract.isDocumentUri(this,uri))throw new IllegalArgumentException("Select the music folder first");
+      Intent i=new Intent(this,PlaybackService.class);
+      i.setAction(PlaybackService.ACTION_PLAY_TRACK);
+      i.putExtra("uri",value);i.putExtra("title",title);i.putExtra("artist",artist);i.putExtra("id",id);
+      if(Build.VERSION.SDK_INT>=26)startForegroundService(i);else startService(i);
+      // Media3 reports state through the snapshot bridge/Android system session.
+      send("onPlaying",value);
+    } catch(Exception ex){send("onPlayerError",ex.getMessage());}
+  });}
   public class Bridge {
     @JavascriptInterface public void requestAndScan(){MainActivity.this.requestAndScan();}
     @JavascriptInterface public void chooseFolder(){MainActivity.this.chooseFolder();}
-    @JavascriptInterface public void play(String uri){MainActivity.this.play(uri);}
-    @JavascriptInterface public void pause(){runOnUiThread(()->{if(player!=null&&player.isPlaying())player.pause();});}
-    @JavascriptInterface public void resume(){runOnUiThread(()->{if(player!=null&&!player.isPlaying()){completed=false;player.start();}});}
-    @JavascriptInterface public void seek(int position){runOnUiThread(()->{if(player!=null){completed=false;player.seekTo(position);}});}
+    @JavascriptInterface public void queueBegin(){PlaybackService.queueBegin();}
+    @JavascriptInterface public void queueAppend(String batch){PlaybackService.queueAppend(batch);}
+    @JavascriptInterface public void queueFinish(){PlaybackService.queueFinish();}
+    @JavascriptInterface public void play(String uri,String title,String artist,String id){MainActivity.this.play(uri,title,artist,id);}
+    @JavascriptInterface public void pause(){runOnUiThread(PlaybackService::pauseCurrent);}
+    @JavascriptInterface public void resume(){runOnUiThread(PlaybackService::resumeCurrent);}
+    @JavascriptInterface public void seek(int position){runOnUiThread(()->PlaybackService.seekCurrent(position));}
     @JavascriptInterface public void exportBackup(String content,String filename){MainActivity.this.exportBackup(content,filename);}
-    @JavascriptInterface public String position(){JSONObject o=new JSONObject();try{if(player!=null){o.put("position",player.getCurrentPosition());o.put("duration",player.getDuration());o.put("playing",player.isPlaying());o.put("ended",completed);}}catch(Exception ignored){}return o.toString();}
+    @JavascriptInterface public String position(){return PlaybackService.snapshot();}
   }
 }
