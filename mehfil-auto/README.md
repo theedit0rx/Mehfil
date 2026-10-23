@@ -18,11 +18,13 @@ From `android/` with Android SDK & Gradle 8.10.2 and JDK 17: `gradle assembleDeb
 - Debug builds are for personal testing and are not production-signed.
 - Android file updates are rescanned when app reopens. Playlists stay local to the same installation; a cloud sync between website and APK is not included.
 
-## Listening Story (v1.1)
-- Real listening time credited from observed media-position progress, bounded by elapsed real time; scrubbing and pauses do not count.
-- Local daily records for the last seven days, eight weekly charts (Monday to Sunday), and a 12-month overview.
-- Memory of the Month reports the most listened recording, top artist and collection, busiest listening day, listening days, songs started and total hours. Previous months remain available.
-- Device-local listening history persists in browser localStorage / the native Android WebView storage. No online activity tracking or audio uploads.
-- Export and restore JSON backups, including listening history, favorites and custom category edits. Android uses the system document picker; browser downloads JSON.
-- If WebView is suspended, listening time is recovered from the media position when it resumes, but a force-close or system kill may omit the final unflushed seconds. On-device and browser stats are separate unless you transfer a backup.
-- v1.1 is a debug-signed testing APK. Android APK debug signing keys from GitHub Actions may differ between builds, so direct installation over v1 can fail. Uninstalling an older version removes its local library preferences. A consistently signed production release is needed for seamless future upgrades.
+## v2: automatic music discovery and listening stories
+
+- Scans the shared Android audio library with permission, with no fixed artist/song limit.
+- **Add music folder** grants optional Storage Access Framework access to a directory that may not be indexed by MediaStore; repeat to add multiple folders. Private streams inside other apps remain inaccessible.
+- Dynamic album, artist and folder collections appear automatically from actual audio metadata. No songs are deleted or omitted because classification failed; uncertain tracks remain in **Other / Review** and **All Kalaam**.
+- Hamd, Naat, Khwaja, Ghaus, Manqabat, Quran, Dua, Qawwali, Ghazal, Nasheed, Marsiya, Bayan and more have localized transliteration/Urdu/Devanagari keyword matching. This is **not** audio-content analysis.
+- Listening minutes/daily weekly monthly stats and Memory of the Month are recorded locally with JSON backups.
+- Website uses file/folder picker and basic MP3 ID3 tags; browser sandbox cannot read installed apps or music without selection.
+- Existing app ID `com.mehfil.auto` and Vercel destination `mehfil-auto.vercel.app` remain unchanged.
+- Development APK is debug-signed on CI; GitHub's temporary signing key may change between builds, so Android may require uninstalling the earlier debug APK before installing this one. This clears the app's local data; export a backup first if the installed version supports it.
