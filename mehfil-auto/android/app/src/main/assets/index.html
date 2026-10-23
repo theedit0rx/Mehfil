@@ -157,12 +157,36 @@ function fix(s){const id=String(s.id??s.uri??s.path??s.name),d=detect(s);let cat
 if(categories.some(k=>MehfilClassifier.PRESETS.some(c=>c[0]===k&&!['nusrat','aziz','sabri','farid','reshma','sartaj'].includes(k))))categories=categories.filter(k=>k!=='other');
 else if(!categories.includes('other'))categories.push('other');
 return {...s,id,title:s.title||s.name||'Untitled',artist:d.artist,album:d.album,duration:Number(s.duration)||0,folder:d.folder,categories};}
-function receive(songs){if(typeof songs==='string'){try{songs=JSON.parse(songs)}catch(e){msg('Could not read music scan results.');return;}}const seen=new Set();tracks=(songs||[]).map(fix).filter(s=>{if(seen.has(s.id))return false;seen.add(s.id);return true;}); tracks.sort((a,b)=>a.title.localeCompare(b.title));msg(`Found ${tracks.length} audio tracks. ${tracks.filter(s=>s.categories.includes('other')).length} have no confident theme yet. They still appear in All Kalaam, Artist and Folder lists.`);update();}
+function receive(songs){if(typeof songs==='string'){try{songs=JSON.parse(songs)}catch(e){msg('Could not read music scan results.');return;}}const seen=new Set();tracks=(songs||[]).map(fix).filter(s=>{if(seen.has(s.id))return false;seen.add(s.id);return true;}); tracks.sort((a,b)=>a.title.localeCompare(b.title));msg(`Found ${tracks.length} audio tracks. ${tracks.filter(s=>s.categories.includes('other')).length} have no confident theme yet. They still appear in All Kalaam, Artist and Folder lists.`);if(native){syncNativeQueue();const p=playerState();syncServiceMedia(p)}update();}
+// Send compact batches of ALL accessible songs to the Android background player.
+function syncNativeQueue(){
+ if(!native||!AndroidBridge.queueBegin)return;
+ AndroidBridge.queueBegin();
+ for(let i=0;i<tracks.length;i+=110){
+  const part=tracks.slice(i,i+110).filter(t=>t.uri).map(t=>({id:t.id,uri:t.uri,title:t.title,artist:t.artist}));
+  if(part.length)AndroidBridge.queueAppend(JSON.stringify(part));
+ }
+ AndroidBridge.queueFinish();
+}
+function syncServiceMedia(state){
+ if(!native||!state||!state.uri)return;
+ const match=tracks.find(t=>t.uri===state.uri||t.id===state.id);
+ if(!match)return;
+ if(playingId!==match.id){
+  listeningTick({position:0,playing:false});
+  playingId=match.id;listeningSample=null;
+  $('now-title').textContent=match.title;$('now-artist').textContent=match.artist;
+  if(state.playing)startListening(match);renderList();
+ }
+ const isPlaying=state.playing===true;
+ if(paused===isPlaying){listeningTick(state);listeningSample=null;}
+ paused=!isPlaying;nativeLoading=false;$('play').textContent=isPlaying?'Ⅱ':'▶';
+}
 let nativeScanBuffer=[];
 window.Mehfil={receiveSongs:receive,beginScan:()=>{nativeScanBuffer=[];msg('Scanning all accessible audio…');},
 receiveChunk:data=>{try{const chunk=JSON.parse(data);if(Array.isArray(chunk))nativeScanBuffer.push(...chunk)}catch(e){msg('Could not read a batch of music metadata.')}},
 endScan:()=>{receive(nativeScanBuffer);nativeScanBuffer=[]},
-onScanNotice:message=>msg(message),onPermissionDenied:()=>msg('Audio access is required for automatic scanning. Allow Music & audio access in Android settings.'),onPlayerError:e=>{listeningTick();listeningSample=null;nativeLoading=false;paused=true;$('play').textContent='▶';msg(`Cannot play this track: ${e}`)},onPlaying:uri=>{const t=current();if(t&&t.uri===uri){nativeLoading=false;startListening(t)}},onBackupSaved:message=>$('insight-status').textContent=message};
+onScanNotice:message=>msg(message),onPermissionDenied:()=>msg('Audio access is required for automatic scanning. Allow Music & audio access in Android settings.'),onPlayerError:e=>{listeningTick();listeningSample=null;nativeLoading=false;paused=true;$('play').textContent='▶';msg(`Cannot play this track: ${e}`)},onPlaying:uri=>{const t=current();if(t&&t.uri===uri){nativeLoading=false;startListening(t)}},onBackupSaved:message=>$('insight-status').textContent=message,onServiceState:raw=>{try{const x=JSON.parse(raw);syncServiceMedia({id:x.id,uri:x.uri,playing:x.playing,position:(Number(x.position)||0)/1000,duration:(Number(x.duration)||0)/1000})}catch(e){}}};
 let showArtists=false,showAlbums=false,showFolders=false;
 function makeCategoryCard(c){const [id,title,icon,desc]=c,b=document.createElement('button');b.className='category';
 const pict=document.createElement('span');pict.className='icon';pict.textContent=icon;
@@ -190,7 +214,7 @@ function editTrack(t){editing=t;$('edit-title').textContent=t.title;$('edit-chec
 $('edit-save').onclick=()=>{if(!editing)return;const selectedCats=[...$('edit-checks').querySelectorAll('input:checked')].map(x=>x.value);overrides[editing.id]=selectedCats;localStorage.setItem('mehfil_overrides_v1',JSON.stringify(overrides));editing.categories=selectedCats;$('editor').classList.add('hidden');renderCats();renderList();};$('edit-cancel').onclick=()=>$('editor').classList.add('hidden');
 
 // Count observed media-position progress while playback is active. Seeking and pauses do not add playtime.
-function playerState(){if(native){try{const x=JSON.parse(AndroidBridge.position());return {position:Math.max(0,Number(x.position)||0)/1000,duration:Math.max(0,Number(x.duration)||0)/1000,playing:x.playing===true,ended:x.ended===true}}catch(e){return {position:0,duration:0,playing:false,ended:false}}}return {position:Number(webAudio.currentTime)||0,duration:Number(webAudio.duration)||0,playing:!webAudio.paused&&!webAudio.ended,ended:webAudio.ended};}
+function playerState(){if(native){try{const x=JSON.parse(AndroidBridge.position());return {position:Math.max(0,Number(x.position)||0)/1000,duration:Math.max(0,Number(x.duration)||0)/1000,playing:x.playing===true,ended:x.ended===true,uri:x.uri||'',id:x.id||''}}catch(e){return {position:0,duration:0,playing:false,ended:false}}}return {position:Number(webAudio.currentTime)||0,duration:Number(webAudio.duration)||0,playing:!webAudio.paused&&!webAudio.ended,ended:webAudio.ended};}
 function startListening(t){history.recordStart(t);const x=playerState();listeningSample={id:t.id,position:x.position,at:Date.now(),playing:true};refreshInsights();}
 function listeningTick(next){if(!playingId)return;const t=current();if(!t)return;const state=next||playerState();const now=Date.now(),before=listeningSample;
 if(before&&before.id===playingId&&before.playing){const deltaTime=Math.max(0,(now-before.at)/1000);const progressed=Math.max(0,state.position-before.position);const credited=Math.min(deltaTime,progressed);if(credited>0.02)history.recordSeconds(t,before.at,credited);}
@@ -211,10 +235,10 @@ for(const b of document.querySelectorAll('[data-period]'))b.onclick=()=>{reportP
 window.addEventListener('pagehide',()=>{listeningTick();history.flush()});document.addEventListener('visibilitychange',()=>{if(document.hidden){listeningTick();history.flush()}else{listeningTick();refreshInsights()}});
 
 function current(){return tracks.find(t=>t.id===playingId)}
-function playTrack(t){if(!t)return;listeningTick();listeningSample=null;if(!(native&&t.uri)&&!t.file){msg('Re-select local files to play this recording.');return;}playingId=t.id;paused=false;$('now-title').textContent=t.title;$('now-artist').textContent=t.artist;$('play').textContent='Ⅱ';if(native&&t.uri){nativeLoading=true;window.AndroidBridge.play(t.uri)}else if(t.file){webAudio.pause();if(webAudio.src.startsWith('blob:'))URL.revokeObjectURL(webAudio.src);webAudio.src=URL.createObjectURL(t.file);webAudio.play().then(()=>{if(playingId===t.id)startListening(t)}).catch(e=>{paused=true;$('play').textContent='▶';msg('Playback unavailable: '+e.message)})}renderList()}
+function playTrack(t){if(!t)return;listeningTick();listeningSample=null;if(!(native&&t.uri)&&!t.file){msg('Re-select local files to play this recording.');return;}playingId=t.id;paused=false;$('now-title').textContent=t.title;$('now-artist').textContent=t.artist;$('play').textContent='Ⅱ';if(native&&t.uri){nativeLoading=true;window.AndroidBridge.play(t.uri,t.title,t.artist,t.id)}else if(t.file){webAudio.pause();if(webAudio.src.startsWith('blob:'))URL.revokeObjectURL(webAudio.src);webAudio.src=URL.createObjectURL(t.file);webAudio.play().then(()=>{if(playingId===t.id)startListening(t)}).catch(e=>{paused=true;$('play').textContent='▶';msg('Playback unavailable: '+e.message)})}renderList()}
 function toggle(){const t=current();if(!t){if(tracks[0])playTrack(tracks[0]);return}listeningTick();if(native){if(paused){AndroidBridge.resume();paused=false}else{AndroidBridge.pause();paused=true}}else if(webAudio.paused){webAudio.play().catch(()=>{});paused=false}else{webAudio.pause();paused=true}const state=playerState();listeningSample={id:t.id,position:state.position,at:Date.now(),playing:!paused};$('play').textContent=paused?'▶':'Ⅱ'}
 function skip(dir){const arr=selectedTracks().length?selectedTracks():tracks;if(!arr.length)return;const i=arr.findIndex(x=>x.id===playingId);playTrack(arr[(i+dir+arr.length)%arr.length]);}
-$('play').onclick=toggle;$('prev').onclick=()=>skip(-1);$('next').onclick=()=>skip(1);webAudio.onended=()=>{listeningTick();skip(1)};webAudio.ontimeupdate=updatePlayer;function updatePlayer(){const state=playerState();listeningTick(state);const {position:pos,duration:dur}=state;if(state.ended&&native&&!nativeLoading&&current()){skip(1);return}if(dur){$('seek').value=Math.min(1000,Math.max(0,Math.floor(pos/dur*1000)));$('time').textContent=`${format(pos)} / ${format(dur)}`;}}setInterval(updatePlayer,950);$('seek').onchange=e=>{const t=current();if(!t)return;listeningTick();listeningSample=null;const fraction=Number(e.target.value)/1000;if(native){const d=JSON.parse(AndroidBridge.position()).duration;AndroidBridge.seek(Math.floor(d*fraction))}else if(webAudio.duration)webAudio.currentTime=webAudio.duration*fraction};
+$('play').onclick=toggle;$('prev').onclick=()=>skip(-1);$('next').onclick=()=>skip(1);webAudio.onended=()=>{listeningTick();skip(1)};webAudio.ontimeupdate=updatePlayer;function updatePlayer(){const state=playerState();if(native)syncServiceMedia(state);listeningTick(state);const {position:pos,duration:dur}=state;if(state.ended&&native&&!nativeLoading&&current()){skip(1);return}if(dur){$('seek').value=Math.min(1000,Math.max(0,Math.floor(pos/dur*1000)));$('time').textContent=`${format(pos)} / ${format(dur)}`;}}setInterval(updatePlayer,950);$('seek').onchange=e=>{const t=current();if(!t)return;listeningTick();listeningSample=null;const fraction=Number(e.target.value)/1000;if(native){const d=JSON.parse(AndroidBridge.position()).duration;AndroidBridge.seek(Math.floor(d*fraction))}else if(webAudio.duration)webAudio.currentTime=webAudio.duration*fraction};
 function scan(){if(native){msg('Checking music permission and scanning your device…');AndroidBridge.requestAndScan()}else{$('folder').click();msg('In a browser, choose an audio folder; automatic Android scanning needs the APK.')}}
 $('scan').onclick=scan;$('scan2').onclick=scan;$('pick').onclick=()=>$('files').click();$('folder-android').onclick=()=>{if(native&&AndroidBridge.chooseFolder)AndroidBridge.chooseFolder()};
 function textFrame(bytes,enc){try{let start=1;let data=bytes.subarray(start),decoded='';if(enc===1||enc===2){let be=enc===2;if(data[0]===0xfe&&data[1]===0xff){be=true;data=data.slice(2)}else if(data[0]===0xff&&data[1]===0xfe){be=false;data=data.slice(2)}if(be){const switched=new Uint8Array(data.length);for(let i=0;i+1<data.length;i+=2){switched[i]=data[i+1];switched[i+1]=data[i]}data=switched}decoded=new TextDecoder('utf-16le').decode(data)}else decoded=new TextDecoder(enc===0?'iso-8859-1':'utf-8').decode(data);return decoded.replace(/\0/g,'').trim().slice(0,240)}catch(e){return ''}}
