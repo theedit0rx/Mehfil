@@ -1,1 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#151b15"/><rect x="24" y="24" width="464" height="464" rx="90" fill="none" stroke="#d9b66b" stroke-width="5"/><path d="M126 358V154l130 140 130-140v204" stroke="#d9b66b" stroke-width="20" stroke-linejoin="round" fill="none"/><circle cx="256" cy="376" r="13" fill="#d9b66b"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+<title>Mehfil Aura</title>
+<defs><linearGradient id="a" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#1f3260"/><stop offset="1" stop-color="#0b1123"/></linearGradient></defs>
+<rect width="108" height="108" rx="25" fill="#0b1123"/>
+<circle cx="54" cy="54" r="44" fill="url(#a)" stroke="#5b7cfa" stroke-width="3"/>
+<path d="M26 72 V38 L40 55 L54 40 L68 55 L82 38 V72" stroke="#ffe7a3" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<circle cx="54" cy="73" r="9" fill="#e94b4b"/><path d="M51 67 L59 73 L51 79Z" fill="#fff7e8"/>
+</svg>
