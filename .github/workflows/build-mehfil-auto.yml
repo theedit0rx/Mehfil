@@ -43,8 +43,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view mehfil-auto-v1 >/dev/null 2>&1; then
-            gh release upload mehfil-auto-v1 Mehfil-Auto.apk --clobber
+          if gh release view mehfil-auto-v2 >/dev/null 2>&1; then
+            gh release upload mehfil-auto-v2 Mehfil-Auto.apk --clobber
           else
-            gh release create mehfil-auto-v1 Mehfil-Auto.apk --title 'Mehfil Auto Android v1' --notes 'Local-first offline music organizer. Grant Music & audio access to scan local songs. This is a debug-signed development APK.'
+            gh release create mehfil-auto-v2 Mehfil-Auto.apk --target mehfil-auto --title 'Mehfil Auto Android v2' --notes 'Offline music organizer with daily, weekly, monthly listening history, monthly memory cards, and JSON backups. Debug-signed APK; signing key may differ from v1. Backup before uninstalling an older version.'
           fi
