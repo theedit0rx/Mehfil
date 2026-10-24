@@ -182,6 +182,8 @@ public class MainActivity extends Activity {
     @JavascriptInterface public void queueAppend(String batch){PlaybackService.queueAppend(batch);}
     @JavascriptInterface public void queueFinish(){PlaybackService.queueFinish();}
     @JavascriptInterface public void play(String uri,String title,String artist,String id){MainActivity.this.play(uri,title,artist,id);}
+    @JavascriptInterface public void setShuffle(boolean enabled){runOnUiThread(()->PlaybackService.setShuffleCurrent(enabled));}
+    @JavascriptInterface public void setRepeat(String mode){runOnUiThread(()->PlaybackService.setRepeatCurrent(mode));}
     @JavascriptInterface public void pause(){runOnUiThread(PlaybackService::pauseCurrent);}
     @JavascriptInterface public void resume(){runOnUiThread(PlaybackService::resumeCurrent);}
     @JavascriptInterface public void seek(int position){runOnUiThread(()->PlaybackService.seekCurrent(position));}
