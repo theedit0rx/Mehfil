@@ -89,9 +89,9 @@ public class MainActivity extends Activity {
             // MediaMetadataRetriever reads headers, NOT entire audio files.
             MediaMetadataRetriever meta=new MediaMetadataRetriever();
             try{meta.setDataSource(MainActivity.this,uri);
-              String title=meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),artist=meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),album=meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),len=meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+              String title=meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),artist=meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),album=meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),genre=meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_GENRE),len=meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
               if(title!=null&&!title.isEmpty())song.put("title",title);if(artist!=null&&!artist.isEmpty())song.put("artist",artist);
-              if(album!=null&&!album.isEmpty())song.put("album",album);
+              if(album!=null&&!album.isEmpty())song.put("album",album);if(genre!=null&&!genre.isEmpty())song.put("genre",genre);
               if(len!=null)try{song.put("duration",Long.parseLong(len)/1000);}catch(NumberFormatException ignored){}
             }catch(Exception ignored){}finally{try{meta.release();}catch(Exception ignored){}}
             songs.put(song);limit++;
