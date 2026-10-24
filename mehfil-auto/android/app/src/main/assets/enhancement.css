@@ -1,0 +1,49 @@
+
+/* Mehfil Aura v5 · Lark-inspired navigation, not Lark's artwork or trademarks */
+.music-desk{margin:24px 0 35px;padding:22px;border-radius:24px;border:1px solid #4b6593;background:linear-gradient(140deg,#1a2b4d,#101e38);box-shadow:0 14px 45px #0003}
+.music-desk h2{font-size:clamp(26px,3.4vw,39px);margin:5px 0 17px}
+.desk-tabs{display:flex;gap:9px;overflow-x:auto;scrollbar-width:thin;padding:3px 0 12px}
+.desk-tabs button{flex:none;cursor:pointer;min-height:42px;border-radius:28px;padding:11px 16px;background:#273b62;border:1px solid #53719c;color:#eff2f8;font:650 13px system-ui}
+.desk-tabs button:hover,.desk-tabs button:focus-visible{background:#5b7cfa;border-color:#acc0ff}
+.desk-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:13px}
+.desk-actions .btn{font-size:12px;min-height:40px;padding:10px 14px}
+#desk-sort{background:#223758;color:#f8f7f2;border:1px solid #7084a8;border-radius:11px;padding:11px;min-height:42px;font:inherit;margin-left:auto}
+#genre-section{scroll-margin-top:25px}
+.desk-more{display:block;width:100%;margin:14px 0;padding:16px;border:1px solid #6983b2;border-radius:15px;cursor:pointer;background:#203459;color:#fff0bd;font-weight:750}
+.desk-more:hover{background:#2a4577}
+.desk-teach-card{background:linear-gradient(145deg,#25385b,#14243e);padding:28px;border-radius:26px;max-height:90vh;overflow:auto;width:min(510px,100%);border:1px solid #7286ae}
+.desk-teach-card h2{margin:10px 0 13px}
+.desk-teach-card label{display:grid;gap:8px;margin:16px 0;color:#e3eaf6;font-size:13px;font-weight:650}
+.desk-teach-card input,.desk-teach-card select{min-height:45px;width:100%;background:#15263f;color:#f8f7f2;padding:10px 12px;border:1px solid #697da6;border-radius:13px;font:inherit}
+.desk-rules{display:grid;gap:6px;margin-top:15px;max-height:170px;overflow:auto}
+.desk-rule{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#f4ddb1;font-size:12px;padding:5px 0;border-bottom:1px solid #ffffff20}
+.desk-rule button{background:#293d5d;color:#ffe7a3;border-radius:10px;border:1px solid #657ca0;padding:6px;cursor:pointer}
+.desk-now{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(16px);background:#080e1df5;padding:15px}
+.desk-now-inner{width:min(600px,100%);max-height:96vh;overflow:auto;padding:clamp(18px,3vw,30px);border:1px solid #8494b3;border-radius:32px;background:radial-gradient(circle at 90% 2%,#5b7cfa58,transparent 41%),linear-gradient(145deg,#1e3054,#0d1a30);box-shadow:0 25px 85px #000c;text-align:center}
+.desk-now-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.desk-now-top button{border-radius:11px;background:#263b60;border:1px solid #7b8dae;color:#fff4d8;padding:10px;cursor:pointer}
+.desk-record{margin:18px auto;width:min(58vw,223px);aspect-ratio:1;border:8px solid #10192e;border-radius:50%;background:repeating-radial-gradient(circle,#101a32 0 7px,#3e537f 8px 10px,#111b35 11px 21px);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#ffe7a3;box-shadow:0 19px 42px #0008}
+.desk-record span{font:600 23px Georgia,serif;letter-spacing:.1em}
+.desk-record small{font-size:8px;letter-spacing:.09em;margin-top:5px}
+#desk-song{font:normal clamp(24px,4vw,37px) Georgia,serif;line-height:1.2;margin:8px auto 5px;overflow-wrap:anywhere;color:#f8f7f2}
+#desk-artist{margin:0 auto 21px}
+#desk-seek{width:100%}
+.desk-times{display:flex;justify-content:space-between;color:#cbd7e9;font-size:12px;margin-top:3px}
+.desk-buttons{display:flex;align-items:center;justify-content:center;gap:10px;margin:15px 0}
+.desk-buttons button{width:48px;height:48px;border-radius:50%;background:#284168;border:1px solid #6881b1;color:#fff7e8;cursor:pointer;font-size:21px}
+.desk-buttons .desk-main{width:65px;height:65px;background:#ffe7a3;color:#16213d;border:0;font-size:27px}
+.desk-buttons .enabled{background:#5b7cfa;border-color:#bdcaff}
+.desk-now-actions{display:flex;justify-content:center;gap:9px}
+.desk-now-actions button{padding:10px 15px;background:#263d63;border:1px solid #6079a4;border-radius:11px;color:#fff1d1;cursor:pointer}
+.desk-queue{border-top:1px solid #506992;margin-top:18px;padding:8px 0;max-height:27vh;overflow:auto}
+.desk-queue-row{width:100%;border:0;border-bottom:1px solid #ffffff1a;background:transparent;padding:11px 5px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#dee5f5;cursor:pointer;text-align:left}
+.desk-queue-row strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.desk-queue-row span{max-width:30%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+.desk-queue-row.active{color:#ffe7a3}
+.player-title{cursor:pointer}.player-title:hover{color:#ffe7a3}
+html[data-palette="chandni"] .music-desk,html[data-palette="chandni"] .desk-teach-card{background:#fff9f2;border-color:#dfb7b0;color:#315c4c}
+html[data-palette="chandni"] .desk-tabs button,html[data-palette="chandni"] #desk-sort,html[data-palette="chandni"] .desk-teach-card input,html[data-palette="chandni"] .desk-teach-card select{background:#f4e4de;color:#315c4c;border-color:#dec5b8}
+html[data-palette="chandni"] .desk-teach-card label{color:#315c4c}
+html[data-palette="chandni"] .desk-now{background:#315c4ced}
+@media(max-width:850px){.music-desk{padding:18px 15px;margin:20px 0}.desk-now-inner{padding:18px}.desk-record{width:170px}.desk-now{padding:9px}}
+@media(max-width:420px){#desk-sort{margin-left:0}.desk-record{width:135px;margin:10px auto}.desk-buttons{gap:5px}.desk-buttons button{width:43px;height:43px}.desk-buttons .desk-main{width:54px;height:54px}.desk-now-inner{padding:15px}.desk-queue{max-height:22vh}}
+@media(prefers-reduced-motion:reduce){.desk-now,.desk-tabs *{transition:none!important}}
