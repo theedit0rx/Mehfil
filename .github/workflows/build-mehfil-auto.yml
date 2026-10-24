@@ -43,8 +43,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view mehfil-auto-v5 >/dev/null 2>&1; then
-            gh release upload mehfil-auto-v5 Mehfil-Auto.apk --clobber
+          if gh release view mehfil-auto-v6 >/dev/null 2>&1; then
+            gh release upload mehfil-auto-v6 Mehfil-Auto.apk --clobber
           else
-            gh release create mehfil-auto-v5 Mehfil-Auto.apk --target mehfil-auto --title 'Mehfil Auto Android v5' --notes 'Mehfil Aura v5: Lark-inspired smart library, self-learning category keywords in Hindi Urdu Roman, custom playlists, genre folders, fullscreen player, queue, repeat, and preserved background playback. Local audio only. Debug-signed APK; signing key may differ from v1. Backup before uninstalling an older version.'
+            gh release create mehfil-auto-v6 Mehfil-Auto.apk --target mehfil-auto --title 'Mehfil Auto Android v6' --notes 'Mehfil Aura v6: rebuilt player-first design, premium album-like covers and full-screen player, fast local music library, smart category sorting, personalized playlists, native notification playback and listening history.
           fi
