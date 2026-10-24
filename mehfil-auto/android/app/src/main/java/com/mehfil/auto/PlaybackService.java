@@ -109,6 +109,21 @@ public class PlaybackService extends MediaSessionService {
         }
         return super.onStartCommand(intent,flags,startId);
     }
+    public static void setShuffleCurrent(boolean enabled) {
+        PlaybackService service=active;
+        if(service!=null&&service.player!=null)service.player.setShuffleModeEnabled(enabled);
+    }
+    public static void setRepeatCurrent(String mode) {
+        PlaybackService service=active;
+        if(service==null||service.player==null)return;
+        int repeat="one".equals(mode)?Player.REPEAT_MODE_ONE:"off".equals(mode)?Player.REPEAT_MODE_OFF:Player.REPEAT_MODE_ALL;
+        service.player.setRepeatMode(repeat);
+    }
+    @Override public void onTaskRemoved(Intent rootIntent) {
+        // Keep active playback alive after a normal Recents swipe.
+        if(player!=null&&player.isPlaying())return;
+        super.onTaskRemoved(rootIntent);
+    }
     public static void pauseCurrent() { PlaybackService s=active;if(s!=null&&s.player!=null)s.player.pause(); }
     public static void resumeCurrent() { PlaybackService s=active;if(s!=null&&s.player!=null)s.player.play(); }
     public static void seekCurrent(long ms) { PlaybackService s=active;if(s!=null&&s.player!=null)s.player.seekTo(Math.max(0,ms)); }
@@ -124,7 +139,7 @@ public class PlaybackService extends MediaSessionService {
                 obj.put("artist",t.mediaMetadata.artist==null?"":t.mediaMetadata.artist.toString());
                 obj.put("position",Math.max(0,s.player.getCurrentPosition()));
                 obj.put("duration",Math.max(0,s.player.getDuration()));
-                obj.put("playing",s.player.isPlaying());
+                obj.put("playing",s.player.isPlaying());obj.put("shuffle",s.player.getShuffleModeEnabled());obj.put("repeat",s.player.getRepeatMode());
                 obj.put("ended",s.player.getPlaybackState()==Player.STATE_ENDED);
             }
         } catch (Exception ignored) { }
