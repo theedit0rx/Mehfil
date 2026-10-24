@@ -1,11 +1,11 @@
 {
-  "name": "Mehfil Auto — Private Music Library",
-  "short_name": "Mehfil Auto",
-  "description": "Local-first Mehfil player. Install from the website or download the Android APK for automatic local audio scanning.",
+  "name": "Mehfil Aura — Your Private Music Player",
+  "short_name": "Mehfil",
+  "description": "A premium local-first music player with auto-sorted collections, real Android background music, and listening memories.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#10130f",
-  "theme_color": "#10130f",
+  "background_color": "#090d18",
+  "theme_color": "#090d18",
   "icons": [
     {
       "src": "icon-192.png",
